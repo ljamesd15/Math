@@ -3,10 +3,17 @@ package numTheory;
 public class ModularArithmetic {
 
 	public static void main(String[] args) {
-		int[] nums = new int[] {3, 5, 7};
+		//int[] nums = new int[] {3, 5, 7};
 		
-		System.out.println(lowestCommonMultiple(nums));
-		System.out.println(gcd(5646546, 364849464));
+		//System.out.println(lowestCommonMultiple(nums));
+		//System.out.println(gcd(5646546, 364849464));
+		
+		int a = 2261;
+		int b = 1275;
+		int[] answer = extEucAlgo(a, b);
+		
+		System.out.println("ax + by = gcd(a, b)");
+		System.out.println(a + "*(" + answer[1] + ") + " + b + "*(" + answer[2] + ") = " + answer[0]);
 	}
 	
 	/**
@@ -69,17 +76,39 @@ public class ModularArithmetic {
 	}
 	
 	/**
-	 * 
+	 * Finds the variables 's' and 't' so that the equation ax + by = gcd(a, b) is satisfied.
 	 * @param a
 	 * @param b
-	 * @return
+	 * @return The array containing arr[0] = gcd(a, b), arr[1] = x, and arr[2] = y
 	 */
 	public static int[] extEucAlgo(int a, int b) {
-		if (gcd(a, b) != 1) {
-			throw new IllegalArgumentException("'a' and 'b' must be relatively prime.");
+		if (b > a) {
+			int tmp = a;
+			a = b;
+			b = tmp;
 		}
 		
-		// private method int[] a, b, x, y, s, t, r
-		return new int[2];
+		int[] vars = new int[] {a, b, 0, 1, 1, 0}; // {a, b, r, s, x, y}
+		int q;
+		int c;
+		int tmpR;
+		int tmpS;
+		
+		while (vars[1] != 0) {
+			q = vars[0] / vars[1];
+			c = vars[0] % vars[1];
+			tmpR = vars[2];
+			tmpS = vars[3];
+			
+			// {a, b, r, s, x, y} = {b, c, x - qr, y - qs, r, s}
+			vars[0] = vars[1];
+			vars[1] = c;
+			vars[2] = vars[4] - q * tmpR;
+			vars[3] = vars[5] - q * tmpS;
+			vars[4] = tmpR;
+			vars[5] = tmpS;
+		}		
+		
+		return new int[] {vars[0], vars[4], vars[5]}; // a, x, y
 	}
 }
