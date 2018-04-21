@@ -6,7 +6,7 @@ public class Divisibility {
 		int[] nums = new int[] {3, 5, 7};
 		
 		System.out.println(lowestCommonMultiple(nums));
-		System.out.println(gcd(252, 180));
+		System.out.println(gcd(5646546, 364849464));
 	}
 	
 	/**
