@@ -114,4 +114,32 @@ public class Primes {
 		
 		return result;
 	}
+	
+	/**
+	 * Prints the breakdown of the prime numbers of the form 4k+1, 4k-1, and other up to 
+	 * the parameter value.
+	 */
+	public static void primeNumBreakdown(int max) {
+		int minus1 = 0;
+		int plus1 = 0;
+		
+		int[] primes = generatePrimes(max);
+		
+		for (int i = 1; i < primes.length; i++) {
+			int prime = primes[i];
+			
+			if ((prime + 1) % 4 == 0) {
+				minus1++;
+			} else {
+				plus1++;
+			}
+		}
+		
+		int totalPrimes = minus1 + plus1;
+		int minus = (100 * minus1) / totalPrimes;
+		int plus = (100 * plus1) / totalPrimes;
+		
+		System.out.println("Minus 1 percentage " + minus / 100.0);
+		System.out.println("Plus 1 percentage " + plus / 100.0);
+	}
 }
