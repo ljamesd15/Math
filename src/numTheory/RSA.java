@@ -24,19 +24,18 @@ public class RSA {
 			count++;
 		}
 		
-		// Make a powers of 2 array of length count and fill in values
+		// Make an array of the powers of 2 with length count
 		int[] powerOf2 = new int[count];
-		powerOf2[0] = 1;
-		for (int i = 1; i < count; i++) {
-			powerOf2[i] = powerOf2[i - 1] * 2;
+		powerOf2[count - 1] = 1;
+		for (int i = count - 2; i >= 0; i--) {
+			powerOf2[i] = powerOf2[i + 1] * 2;
 		}
 		
-		// Inv: n < powersOf2[i] * 2, n + base10(result) = n
+		// Inv: n < powersOf2[i - 1] * 2, n + base10(result) = n
 		int[] result = new int[count];
-		for (int i = 0; i < result.length; i++) {
-			int powOf2Index = powerOf2.length - 1 - i;
-			if (n >= powerOf2[powOf2Index]) {
-				n = n - powerOf2[powOf2Index];
+		for (int i = 0; i < powerOf2.length; i++) {
+			if (n >= powerOf2[i]) {
+				n = n - powerOf2[i];
 				result[i] = 1;
 			}
 		}
