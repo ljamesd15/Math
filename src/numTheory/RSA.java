@@ -34,7 +34,7 @@ public class RSA {
 		// Inv: n < powersOf2[i] * 2, n + base10(result) = n
 		int[] result = new int[count];
 		for (int i = 0; i < result.length; i++) {
-			int powOf2Index = count - 1 - i;
+			int powOf2Index = powerOf2.length - 1 - i;
 			if (n >= powerOf2[powOf2Index]) {
 				n = n - powerOf2[powOf2Index];
 				result[i] = 1;
