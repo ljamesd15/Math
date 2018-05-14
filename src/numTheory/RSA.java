@@ -4,7 +4,7 @@ public class RSA {
 
 	public static void main(String[] args) {
 		int[] arr = binaryOf(8);
-		for (int i = arr.length - 1; i >= 0; i--) {
+		for (int i = 0; i < arr.length; i++) {
 			System.out.print(arr[i]);
 		}
 		System.out.println();
@@ -12,7 +12,7 @@ public class RSA {
 	
 	/**
 	 * Creates and returns a binary representation of the integer n.
-	 * @returns An array of {0, 1} whose LSB is the zeroth index.
+	 * @returns An array of {0, 1} whose MSB is the zeroth index.
 	 */
 	public static int[] binaryOf(int n) {
 		int currentPowOf2 = 1; // Start with 2^0
@@ -31,12 +31,12 @@ public class RSA {
 			powerOf2[i] = powerOf2[i - 1] * 2;
 		}
 		
-		// If n is bigger than our next biggest power of 2 then subtract that from n and 
-		// set the bit in the bitset
+		// Inv: n < powersOf2[i] * 2, n + base10(result) = n
 		int[] result = new int[count];
-		for (int i = powerOf2.length - 1; i > -1; i--) {
-			if (n >= powerOf2[i]) {
-				n = n - powerOf2[i];
+		for (int i = 0; i < result.length; i++) {
+			int powOf2Index = count - 1 - i;
+			if (n >= powerOf2[powOf2Index]) {
+				n = n - powerOf2[powOf2Index];
 				result[i] = 1;
 			}
 		}
