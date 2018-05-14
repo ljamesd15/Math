@@ -6,14 +6,19 @@ public class ModularArithmetic {
 		//int[] nums = new int[] {3, 5, 7};
 		
 		//System.out.println(lowestCommonMultiple(nums));
-		//System.out.println(gcd(5646546, 364849464));
+		System.out.println(gcd(51, 141));
 		
-		int a = 2261;
-		int b = 1275;
+		System.out.println(Math.pow(3, 70));
+		
+		/*
+		int a = 101;
+		int b = 37;
 		int[] answer = extEucAlgo(a, b);
 		
 		System.out.println("ax + by = gcd(a, b)");
 		System.out.println(a + "*(" + answer[1] + ") + " + b + "*(" + answer[2] + ") = " + answer[0]);
+		System.out.println();
+		*/
 	}
 	
 	/**
@@ -50,6 +55,8 @@ public class ModularArithmetic {
 			} else {
 				current += largestNum;
 			}
+			
+			
 		}
 		
 		return -1;
@@ -82,10 +89,12 @@ public class ModularArithmetic {
 	 * @return The array containing arr[0] = gcd(a, b), arr[1] = x, and arr[2] = y
 	 */
 	public static int[] extEucAlgo(int a, int b) {
+		boolean swappedVals = false;
 		if (b > a) {
 			int tmp = a;
 			a = b;
 			b = tmp;
+			swappedVals = true;
 		}
 		
 		int[] vars = new int[] {a, b, 0, 1, 1, 0}; // {a, b, r, s, x, y}
@@ -95,6 +104,11 @@ public class ModularArithmetic {
 		int tmpS;
 		
 		while (vars[1] != 0) {
+			for (int i = 0; i < 6; i++) {
+				System.out.print(vars[i] + ", ");
+			}
+			System.out.println();
+			
 			q = vars[0] / vars[1];
 			c = vars[0] % vars[1];
 			tmpR = vars[2];
@@ -107,8 +121,25 @@ public class ModularArithmetic {
 			vars[3] = vars[5] - q * tmpS;
 			vars[4] = tmpR;
 			vars[5] = tmpS;
+			
+
 		}		
 		
-		return new int[] {vars[0], vars[4], vars[5]}; // a, x, y
+		if (swappedVals) {
+			return new int[] {vars[0], vars[5], vars[4]}; // a, y, x
+		} else {
+			return new int[] {vars[0], vars[4], vars[5]}; // a, x, y
+		}
+	}
+	
+	/**
+	 * 
+	 * @param a
+	 * @param b
+	 * @param m
+	 * @return
+	 */
+	public static int solveModLinearEq(int a, int b, int m) {
+		return -1;
 	}
 }
