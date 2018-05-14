@@ -3,15 +3,16 @@ package numTheory;
 public class RSA {
 
 	public static void main(String[] args) {
-		int[] arr = binaryOf(5);
-		for (int i = 0; i < arr.length; i++) {
+		int[] arr = binaryOf(379797810);
+		for (int i = arr.length - 1; i >= 0; i--) {
 			System.out.print(arr[i]);
 		}
 		System.out.println();
 	}
 	
 	/**
-	 * Returns the binary representation of the integer n.
+	 * Creates and returns a binary representation of the integer n.
+	 * @returns An array of {0, 1} whose LSB is the zeroth index.
 	 */
 	public static int[] binaryOf(int n) {
 		int currentPowOf2 = 2;
