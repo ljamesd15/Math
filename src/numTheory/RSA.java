@@ -3,7 +3,7 @@ package numTheory;
 public class RSA {
 
 	public static void main(String[] args) {
-		int[] arr = binaryOf(379797810);
+		int[] arr = binaryOf(8);
 		for (int i = arr.length - 1; i >= 0; i--) {
 			System.out.print(arr[i]);
 		}
@@ -15,8 +15,8 @@ public class RSA {
 	 * @returns An array of {0, 1} whose LSB is the zeroth index.
 	 */
 	public static int[] binaryOf(int n) {
-		int currentPowOf2 = 2;
-		int count  = 2;
+		int currentPowOf2 = 1; // Start with 2^0
+		int count  = 1; // Binary digits required to represent 1
 		
 		// While n is greater than or equal to the next power of 2.
 		while(n >= currentPowOf2 * 2) {
