@@ -41,8 +41,47 @@ public class RSA {
 		}
 		
 		assert(n == 0);
+		return result;	
+	}
+	
+	/**
+	 * Solves the equation of a^m (mod n).
+	 * @param a The base which will be exponentiated (mod n).
+	 * @param m The number which the base will be exponentiated to (mod n).
+	 * @param n The modulus of the equation.
+	 * @throws IllegalArgumentException if base, power or modulo is negative.
+	 * @return Returns a number x such that 0 <= x < modulo and x = a^m (mod n).
+	 */
+	public static int modPow(int a, int m, int n) {
+		if (a < 0 || m < 0 || n < 0) {
+			throw new IllegalArgumentException("The base, power and modulo parameters must all be "
+					+ "non-negative.");
+		}
+		// Faster to compute outright
+		if (m <= 2) {
+			return (int) (Math.pow(a, m) % n);
+		}
+		
+		int[] binOfM = binaryOf(m);
+		
+		// Array which will hold all the residues of the base to powers of 2 mod modulo
+		int[] residues = new int[binOfM.length];
+		residues[residues.length - 1] = a % n;
+		residues[residues.length - 2] = (int) (Math.pow(a, 2) % n);
+		for (int i = residues.length - 3; i >= 0; i--) {
+			// a^i = a^{i+1} * a^2 since (i+1)*2 = i
+			residues[i] = (int) (Math.pow(residues[i + 1], 2) % n);
+		}
+		
+		int result = 1;
+		// If k + l = m then a^k * a^l = a^m thus using our binary representation of m and our 
+		// pre-calculated residues lets calculate a^m mod n.
+		for (int i = 0; i < binOfM.length; i++) {
+			if (binOfM[i] == 1) {
+				result = (result * residues[i]) % n;
+			}
+		}
+		
 		return result;
-		
-		
 	}
 }
