@@ -1,4 +1,4 @@
-package numTheory;
+package RSA;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -6,6 +6,16 @@ import org.junit.Test;
 
 public class RSATest {
 
+	@Test
+	public void testGCD() {
+		assertEquals(1, RSA.gcd(13, 24));
+		assertEquals(4, RSA.gcd(4, 8));
+		assertEquals(2, RSA.gcd(152, 6));
+		assertEquals(13, RSA.gcd(13, 26));
+		assertEquals(1, RSA.gcd(10, 21));
+		assertEquals(1, RSA.gcd(71, 57));
+	}
+	
 	@Test
 	public void testBinaryOf() {		
 		int[] tests = new int[] {8, 5, 379797810, 27039271};
@@ -48,7 +58,7 @@ public class RSATest {
 	public void testExtEucAlgo() {
 		// g = 27s + 12t
 		int[] sol = new int[] {3, 1, -2};
-		int[] returned = RSA.extEucAlgo(27, 12);
+		long[] returned = RSA.extEucAlgo(27, 12);
 		assertEquals(sol.length, returned.length);
 		for (int i = 0; i < sol.length; i++) {
 			assertEquals(sol[i], returned[i]);

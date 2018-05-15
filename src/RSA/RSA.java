@@ -1,4 +1,4 @@
-package numTheory;
+package RSA;
 
 public class RSA {
 
@@ -8,6 +8,26 @@ public class RSA {
 			System.out.print(arr[i]);
 		}
 		System.out.println();
+	}
+	
+	/**
+	 * Computes and returns the gcd of a and b
+	 */
+	public static long gcd(long a, long b) {
+		if (b > a) {
+			long tmp = b;
+			b = a;
+			a = tmp;
+		}
+		
+		long r = a % b;
+		
+		while (r != 0) {
+			a = b;
+			b = r;
+			r = a % b;
+		}		
+		return b;
 	}
 	
 	/**
@@ -92,20 +112,20 @@ public class RSA {
 	 * @param b
 	 * @return The array containing arr[0] = gcd(a, b), arr[1] = x, and arr[2] = y
 	 */
-	public static int[] extEucAlgo(int a, int b) {
+	public static long[] extEucAlgo(long a, long b) {
 		boolean swappedVals = false;
 		if (b > a) {
-			int tmp = a;
+			long tmp = a;
 			a = b;
 			b = tmp;
 			swappedVals = true;
 		}
 		
-		int[] vars = new int[] {a, b, 0, 1, 1, 0}; // {a, b, r, s, x, y}
-		int q;
-		int c;
-		int tmpR;
-		int tmpS;
+		long[] vars = new long[] {a, b, 0, 1, 1, 0}; // {a, b, r, s, x, y}
+		long q;
+		long c;
+		long tmpR;
+		long tmpS;
 		
 		while (vars[1] != 0) {			
 			q = vars[0] / vars[1];
@@ -123,9 +143,9 @@ public class RSA {
 		}		
 		
 		if (swappedVals) {
-			return new int[] {vars[0], vars[5], vars[4]}; // a, y, x
+			return new long[] {vars[0], vars[5], vars[4]}; // a, y, x
 		} else {
-			return new int[] {vars[0], vars[4], vars[5]}; // a, x, y
+			return new long[] {vars[0], vars[4], vars[5]}; // a, x, y
 		}
 	}
 }
