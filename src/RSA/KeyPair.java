@@ -36,4 +36,22 @@ public class KeyPair {
 	public String decode(String cipherText) {
 		return this.privK.decode(cipherText);
 	}
+	
+	/**
+	 * Dummy for testing
+	 * @param x
+	 * @return
+	 */
+	public long encodeNum(long x) {
+		return this.pubK.encodeNum(x);
+	}
+	
+	/**
+	 * Dummy for testing
+	 * @param x
+	 * @return
+	 */
+	public long decodeNum(long x) {
+		return this.privK.decodeNum(x);
+	}
 }

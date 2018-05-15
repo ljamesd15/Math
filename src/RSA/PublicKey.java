@@ -21,25 +21,20 @@ public class PublicKey {
 	}
 	
 	/**
-	 * @return The 'n' of this.
-	 */
-	public long getN() {
-		return this.n;
-	}
-	
-	/**
-	 * @return The 'e' of this.
-	 */
-	public long getE() {
-		return this.e;
-	}
-	
-	/**
 	 * Encodes a message using a publicly known n and e
 	 * @param message String which you want to encode using this.
 	 * @return The cipher text of message after encoding by this.
 	 */
 	public String encode(String message) {
 		return null;
+	}
+	
+	/**
+	 * Dummy for testing
+	 * @param x
+	 * @return
+	 */
+	public long encodeNum(long x) {
+		return RSA.modPow(x, e, n);
 	}
 }

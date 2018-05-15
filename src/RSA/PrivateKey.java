@@ -12,24 +12,29 @@ public class PrivateKey {
 	private final int p;
 	private final int q;
 	private final long n;
-	private final long e;
-	private final long d;
+	private final int e;
+	private final int d;
 	
 	// Instead of generating the same private key find a way to securely pick two primes
 	PrivateKey() {
-		this.p = 945709903;
-		this.q = 223683227;
+		//this.p = 104851;
+		//this.q = 221807;
+
+		this.p = 17;
+		this.q = 23;
 		this.n = p * q;
 		
 		long euler_phi = (p - 1) * (q - 1);
 		Random r = new Random();
-		long e = r.nextLong();
-		while (e < euler_phi && RSA.gcd(euler_phi, e) != 1) {
-			e = r.nextLong();
+		int e = r.nextInt();
+		while (e < 2 || e > euler_phi || RSA.gcd(euler_phi, e) != 1) {
+			e = r.nextInt();
 		}
 		this.e = e;
+		System.out.println(RSA.gcd(euler_phi, e));
+		long[] arr = RSA.extEucAlgo(this.e, euler_phi);
 		
-		this.d = RSA.extEucAlgo(this.e, euler_phi)[1];
+		this.d = (int) RSA.extEucAlgo(this.e, euler_phi)[1];
 		
 		assert((e * d) % euler_phi == 1);
 	}
@@ -41,6 +46,15 @@ public class PrivateKey {
 	 */
 	public String decode(String cipherText) {
 		return null;
+	}
+	
+	/**
+	 * Dummy for testing
+	 * @param x
+	 * @return
+	 */
+	public long decodeNum(long x) {
+		return RSA.modPow(x, d, n);
 	}
 	
 	/**

@@ -34,7 +34,7 @@ public class RSA {
 	 * Creates and returns a binary representation of the integer n.
 	 * @returns An array of {0, 1} whose MSB is the zeroth index.
 	 */
-	public static int[] binaryOf(int n) {
+	public static int[] binaryOf(long n) {
 		int currentPowOf2 = 1; // Start with 2^0
 		int count  = 1; // Binary digits required to represent 1
 		
@@ -72,7 +72,7 @@ public class RSA {
 	 * @throws IllegalArgumentException if base, power or modulo is negative.
 	 * @return Returns a number x such that 0 <= x < modulo and x = a^m (mod n).
 	 */
-	public static int modPow(int a, int m, int n) {
+	public static long modPow(long a, long m, long n) {
 		if (a < 0 || m < 0 || n < 0) {
 			throw new IllegalArgumentException("The base, power and modulo parameters must all be "
 					+ "non-negative.");
@@ -86,7 +86,7 @@ public class RSA {
 		
 		// Array which will hold all the residues of the base to powers of 2 mod modulo
 		int[] residues = new int[binOfM.length];
-		residues[residues.length - 1] = a % n;
+		residues[residues.length - 1] = (int) (a % n);
 		residues[residues.length - 2] = (int) (Math.pow(a, 2) % n);
 		for (int i = residues.length - 3; i >= 0; i--) {
 			// a^i = a^{i+1} * a^2 since (i+1)*2 = i
@@ -98,7 +98,7 @@ public class RSA {
 		// pre-calculated residues lets calculate a^m mod n.
 		for (int i = 0; i < binOfM.length; i++) {
 			if (binOfM[i] == 1) {
-				result = (result * residues[i]) % n;
+				result = (int) ((result * residues[i]) % n);
 			}
 		}
 		

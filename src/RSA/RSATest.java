@@ -88,4 +88,14 @@ public class RSATest {
 			assertEquals(sol[i], returned[i]);
 		}
 	}
+	
+	@Test
+	public void encodeDecodeKeyPair() {
+		KeyPair pair = new KeyPair();
+		long message = 17;
+		long cipherText = pair.encodeNum(message);
+		long decrypted = pair.decodeNum(cipherText);
+		
+		assertEquals(message, decrypted);
+	}
 }
