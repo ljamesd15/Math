@@ -43,4 +43,39 @@ public class RSATest {
 		// 7^{37979797810} mod 17
 		assertEquals(15, RSA.modPow(7, 379797810, 17));
 	}
+	
+	@Test
+	public void testExtEucAlgo() {
+		// g = 27s + 12t
+		int[] sol = new int[] {3, 1, -2};
+		int[] returned = RSA.extEucAlgo(27, 12);
+		assertEquals(sol.length, returned.length);
+		for (int i = 0; i < sol.length; i++) {
+			assertEquals(sol[i], returned[i]);
+		}
+
+		// g = 9s + 13t
+		sol = new int[] {1, 3, -2};
+		returned = RSA.extEucAlgo(9, 13);
+		assertEquals(sol.length, returned.length);
+		for (int i = 0; i < sol.length; i++) {
+			assertEquals(sol[i], returned[i]);
+		}
+
+		// g = 314s + 71t
+		sol = new int[] {1, -26, 115};
+		returned = RSA.extEucAlgo(314, 71);
+		assertEquals(sol.length, returned.length);
+		for (int i = 0; i < sol.length; i++) {
+			assertEquals(sol[i], returned[i]);
+		}
+
+		// g = 29s + 23t
+		sol = new int[] {1, 4, -5};
+		returned = RSA.extEucAlgo(29, 23);
+		assertEquals(sol.length, returned.length);
+		for (int i = 0; i < sol.length; i++) {
+			assertEquals(sol[i], returned[i]);
+		}
+	}
 }

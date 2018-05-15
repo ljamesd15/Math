@@ -84,4 +84,48 @@ public class RSA {
 		
 		return result;
 	}
+	
+	
+	/**
+	 * Finds the variables 's' and 't' so that the equation ax + by = gcd(a, b) is satisfied.
+	 * @param a
+	 * @param b
+	 * @return The array containing arr[0] = gcd(a, b), arr[1] = x, and arr[2] = y
+	 */
+	public static int[] extEucAlgo(int a, int b) {
+		boolean swappedVals = false;
+		if (b > a) {
+			int tmp = a;
+			a = b;
+			b = tmp;
+			swappedVals = true;
+		}
+		
+		int[] vars = new int[] {a, b, 0, 1, 1, 0}; // {a, b, r, s, x, y}
+		int q;
+		int c;
+		int tmpR;
+		int tmpS;
+		
+		while (vars[1] != 0) {			
+			q = vars[0] / vars[1];
+			c = vars[0] % vars[1];
+			tmpR = vars[2];
+			tmpS = vars[3];
+			
+			// {a, b, r, s, x, y} = {b, c, x - qr, y - qs, r, s}
+			vars[0] = vars[1];
+			vars[1] = c;
+			vars[2] = vars[4] - q * tmpR;
+			vars[3] = vars[5] - q * tmpS;
+			vars[4] = tmpR;
+			vars[5] = tmpS;
+		}		
+		
+		if (swappedVals) {
+			return new int[] {vars[0], vars[5], vars[4]}; // a, y, x
+		} else {
+			return new int[] {vars[0], vars[4], vars[5]}; // a, x, y
+		}
+	}
 }
