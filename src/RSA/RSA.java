@@ -69,12 +69,12 @@ public class RSA {
 	 * @param a The base which will be exponentiated (mod n).
 	 * @param m The number which the base will be exponentiated to (mod n).
 	 * @param n The modulus of the equation.
-	 * @throws IllegalArgumentException if base, power or modulo is negative.
+	 * @throws IllegalArgumentException if power or modulo is negative.
 	 * @return Returns a number x such that 0 <= x < modulo and x = a^m (mod n).
 	 */
 	public static long modPow(long a, long m, long n) {
-		if (a < 0 || m < 0 || n < 0) {
-			throw new IllegalArgumentException("The base, power and modulo parameters must all be "
+		if (m < 0 || n < 0) {
+			throw new IllegalArgumentException("The power and modulo parameters must all be "
 					+ "non-negative.");
 		}
 		// Faster to compute outright

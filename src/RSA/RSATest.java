@@ -91,11 +91,13 @@ public class RSATest {
 	
 	@Test
 	public void encodeDecodeKeyPair() {
-		KeyPair pair = new KeyPair();
-		long message = 17;
-		long cipherText = pair.encodeNum(message);
-		long decrypted = pair.decodeNum(cipherText);
-		
-		assertEquals(message, decrypted);
+		int[] messages = new int[] {17, 0, 1, 27, 300, 4782169, 560212};
+		for (int i = 0; i < messages.length; i++) {
+			KeyPair pair = new KeyPair();
+			long cipherText = pair.encodeNum(messages[i]);
+			long decrypted = pair.decodeNum(cipherText);
+			
+			assertEquals(messages[i], decrypted);
+		}
 	}
 }

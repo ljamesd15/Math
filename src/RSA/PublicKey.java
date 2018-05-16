@@ -1,5 +1,7 @@
 package RSA;
 
+import java.math.BigInteger;
+
 /**
  * As of right now only creates the same key pairs every time. DO NOT USE
  * @author LJamesD
@@ -7,17 +9,17 @@ package RSA;
  */
 public class PublicKey {
 
-	private final long n;
-	private final long e;
+	private final BigInteger n;
+	private final BigInteger encodeNum;
 	
 	/**
 	 * Creates a public key object from two large primes.
 	 * @param p A large prime which is vastly different from q.
 	 * @param q A large prime which is vastly different from p
 	 */
-	PublicKey(long n, long e) {
+	PublicKey(BigInteger n, BigInteger e) {
 		this.n = n;
-		this.e = e;
+		this.encodeNum = e;
 	}
 	
 	/**
@@ -35,6 +37,7 @@ public class PublicKey {
 	 * @return
 	 */
 	public long encodeNum(long x) {
-		return RSA.modPow(x, e, n);
+		BigInteger message = BigInteger.valueOf(x);
+		return message.modPow(this.encodeNum, this.n).longValue();
 	}
 }

@@ -1,5 +1,7 @@
 package RSA;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -9,34 +11,39 @@ import java.util.Random;
  */
 public class PrivateKey {
 
-	private final int p;
-	private final int q;
-	private final long n;
-	private final int e;
-	private final int d;
+	private final BigInteger p;
+	private final BigInteger q;
+	private final BigInteger n;
+	private final BigInteger encodeNum;
+	private final BigInteger decodeNum;
 	
-	// Instead of generating the same private key find a way to securely pick two primes
 	PrivateKey() {
-		//this.p = 104851;
-		//this.q = 221807;
+		Random secRan = new SecureRandom();
+		//this.p = new BigInteger(2048, 4, secRan);
+		//this.q = new BigInteger(1024, 4, secRan);
 
-		this.p = 17;
-		this.q = 23;
-		this.n = p * q;
+		this.p = BigInteger.valueOf(17);
+		this.q = BigInteger.valueOf(23);
+		this.n = this.p.multiply(this.q);
 		
-		long euler_phi = (p - 1) * (q - 1);
-		Random r = new Random();
-		int e = r.nextInt();
-		while (e < 2 || e > euler_phi || RSA.gcd(euler_phi, e) != 1) {
-			e = r.nextInt();
-		}
-		this.e = e;
-		System.out.println(RSA.gcd(euler_phi, e));
-		long[] arr = RSA.extEucAlgo(this.e, euler_phi);
+		BigInteger euler_phi = (this.p.subtract(BigInteger.ONE).multiply(this.q.subtract(BigInteger.ONE)));
+		BigInteger possibleE = new BigInteger(1024, secRan);
+		BigInteger possibleD;
 		
-		this.d = (int) RSA.extEucAlgo(this.e, euler_phi)[1];
-		
-		assert((e * d) % euler_phi == 1);
+		do {
+			do {
+				possibleE = new BigInteger(1024, secRan);
+				// Need to be invertible so if the gcd is not 1 then try again.
+			} while (possibleE.gcd(euler_phi).compareTo(BigInteger.ONE) != 0);
+			
+			possibleD = extEucAlgo(possibleE, euler_phi)[1];
+			// Need it to be invertible so if possibleD is less than 1 try again
+		} while (possibleD.compareTo(BigInteger.ONE) < 0);
+
+		this.encodeNum = possibleE; 			
+		this.decodeNum = possibleD;
+		System.out.println(this.encodeNum);
+		System.out.println(this.decodeNum);
 	}
 	
 	/**
@@ -54,13 +61,58 @@ public class PrivateKey {
 	 * @return
 	 */
 	public long decodeNum(long x) {
-		return RSA.modPow(x, d, n);
+		BigInteger message = BigInteger.valueOf(x);
+		return message.modPow(this.decodeNum, this.n).longValue();
 	}
 	
 	/**
 	 * Generates and returns a public key based off of this private key's information.
 	 */
 	public PublicKey genPubKey() {
-		return new PublicKey(this.n, this.e);
+		return new PublicKey(this.n, this.encodeNum);
+	}
+	
+	/**
+	 * Finds the variables 's' and 't' so that the equation ax + by = gcd(a, b) is satisfied.
+	 * @param a
+	 * @param b
+	 * @return The array containing arr[0] = gcd(a, b), arr[1] = x, and arr[2] = y
+	 */
+	public static BigInteger[] extEucAlgo(BigInteger a, BigInteger b) {
+		boolean swappedVals = false;
+		if (b.compareTo(a) == 1) {
+			BigInteger tmp = a;
+			a = b;
+			b = tmp;
+			swappedVals = true;
+		}
+		
+		BigInteger[] vars = new BigInteger[] {a, b, BigInteger.ZERO, BigInteger.ONE, 
+				BigInteger.ONE, BigInteger.ZERO}; // {a, b, r, s, x, y}
+		BigInteger q;
+		BigInteger c;
+		BigInteger tmpR;
+		BigInteger tmpS;
+		
+		while (vars[1] != BigInteger.ZERO) {			
+			q = vars[0].divide(vars[1]);
+			c = vars[0].mod(vars[1]);
+			tmpR = vars[2];
+			tmpS = vars[3];
+			
+			// {a, b, r, s, x, y} = {b, c, x - qr, y - qs, r, s}
+			vars[0] = vars[1];
+			vars[1] = c;
+			vars[2] = vars[4].subtract(q.multiply(tmpR));
+			vars[3] = vars[5].subtract(q.multiply(tmpS));
+			vars[4] = tmpR;
+			vars[5] = tmpS;
+		}		
+		
+		if (swappedVals) {
+			return new BigInteger[] {vars[0], vars[5], vars[4]}; // a, y, x
+		} else {
+			return new BigInteger[] {vars[0], vars[4], vars[5]}; // a, x, y
+		}
 	}
 }
