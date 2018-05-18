@@ -1,5 +1,7 @@
 package RSA;
 
+import java.math.BigInteger;
+
 /**
  * As of right now only creates the same key pairs every time. DO NOT USE
  * @author LJamesD
@@ -8,7 +10,7 @@ package RSA;
 public class KeyPair {
 
 	private final PublicKey pubK;
-	private final PrivateKey privK;
+	public final PrivateKey privK;
 	
 	KeyPair() {
 		this.privK = new PrivateKey();
@@ -42,7 +44,7 @@ public class KeyPair {
 	 * @param x
 	 * @return
 	 */
-	public long encodeNum(long x) {
+	public BigInteger encodeNum(long x) {
 		return this.pubK.encodeNum(x);
 	}
 	
@@ -51,7 +53,7 @@ public class KeyPair {
 	 * @param x
 	 * @return
 	 */
-	public long decodeNum(long x) {
+	public long decodeNum(BigInteger x) {
 		return this.privK.decodeNum(x);
 	}
 }

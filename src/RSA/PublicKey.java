@@ -36,8 +36,8 @@ public class PublicKey {
 	 * @param x
 	 * @return
 	 */
-	public long encodeNum(long x) {
+	public BigInteger encodeNum(long x) {
 		BigInteger message = BigInteger.valueOf(x);
-		return message.modPow(this.encodeNum, this.n).longValue();
+		return message.modPow(this.encodeNum, this.n);
 	}
 }

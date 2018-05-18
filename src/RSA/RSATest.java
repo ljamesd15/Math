@@ -2,6 +2,8 @@ package RSA;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.math.BigInteger;
+
 import org.junit.Test;
 
 public class RSATest {
@@ -90,12 +92,30 @@ public class RSATest {
 	}
 	
 	@Test
-	public void encodeDecodeKeyPair() {
-		int[] messages = new int[] {17, 0, 1, 27, 300, 4782169, 560212};
+	public void encodeDecodeKeyPairInts() {
+		KeyPair pair = new KeyPair();
+		BigInteger cipherText;
+		long decrypted;
+		int[] messages = new int[] {17, 0, 1, 27, 300, 4782172, 4782169, 560212};
+		
 		for (int i = 0; i < messages.length; i++) {
-			KeyPair pair = new KeyPair();
-			long cipherText = pair.encodeNum(messages[i]);
-			long decrypted = pair.decodeNum(cipherText);
+			cipherText = pair.encodeNum(messages[i]);
+			decrypted = pair.decodeNum(cipherText);
+			
+			assertEquals(messages[i], decrypted);
+		}
+	}
+	
+	@Test
+	public void encodeDecodeKeyPairStrings() {
+		KeyPair pair = new KeyPair();
+		BigInteger cipherText;
+		long decrypted;
+		int[] messages = new int[] {}; // Come up with some test strings
+		
+		for (int i = 0; i < messages.length; i++) {
+			cipherText = pair.encodeNum(messages[i]);
+			decrypted = pair.decodeNum(cipherText);
 			
 			assertEquals(messages[i], decrypted);
 		}

@@ -11,19 +11,16 @@ import java.util.Random;
  */
 public class PrivateKey {
 
-	private final BigInteger p;
-	private final BigInteger q;
-	private final BigInteger n;
-	private final BigInteger encodeNum;
-	private final BigInteger decodeNum;
+	public final BigInteger p;
+	public final BigInteger q;
+	public final BigInteger n;
+	public final BigInteger encodeNum;
+	public final BigInteger decodeNum;
 	
 	PrivateKey() {
 		Random secRan = new SecureRandom();
-		//this.p = new BigInteger(2048, 4, secRan);
-		//this.q = new BigInteger(1024, 4, secRan);
-
-		this.p = BigInteger.valueOf(17);
-		this.q = BigInteger.valueOf(23);
+		this.p = new BigInteger(2048, 4, secRan);
+		this.q = new BigInteger(1024, 4, secRan);
 		this.n = this.p.multiply(this.q);
 		
 		BigInteger euler_phi = (this.p.subtract(BigInteger.ONE).multiply(this.q.subtract(BigInteger.ONE)));
@@ -31,19 +28,19 @@ public class PrivateKey {
 		BigInteger possibleD;
 		
 		do {
-			do {
-				possibleE = new BigInteger(1024, secRan);
-				// Need to be invertible so if the gcd is not 1 then try again.
-			} while (possibleE.gcd(euler_phi).compareTo(BigInteger.ONE) != 0);
-			
-			possibleD = extEucAlgo(possibleE, euler_phi)[1];
-			// Need it to be invertible so if possibleD is less than 1 try again
-		} while (possibleD.compareTo(BigInteger.ONE) < 0);
+			possibleE = new BigInteger(1024, secRan);
+			// Need to be invertible so if the gcd is not 1 then try again.
+		} while (possibleE.gcd(euler_phi).compareTo(BigInteger.ONE) != 0);
+		
+		possibleD = extEucAlgo(possibleE, euler_phi)[1];
+		// Need it to be invertible so if possibleD is less than 1 add 
+		// euler_phi to it until it is positive
+		while(possibleD.compareTo(BigInteger.ONE) < 0) {
+			possibleD = possibleD.add(euler_phi);
+		}
 
 		this.encodeNum = possibleE; 			
 		this.decodeNum = possibleD;
-		System.out.println(this.encodeNum);
-		System.out.println(this.decodeNum);
 	}
 	
 	/**
@@ -60,9 +57,8 @@ public class PrivateKey {
 	 * @param x
 	 * @return
 	 */
-	public long decodeNum(long x) {
-		BigInteger message = BigInteger.valueOf(x);
-		return message.modPow(this.decodeNum, this.n).longValue();
+	public long decodeNum(BigInteger x) {
+		return x.modPow(this.decodeNum, this.n).longValue();
 	}
 	
 	/**
