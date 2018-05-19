@@ -3,14 +3,16 @@ package RSA;
 import java.math.BigInteger;
 
 /**
- * As of right now only creates the same key pairs every time. DO NOT USE
+ * A KeyPair object which contains a private and public key for RSA encryption.
  * @author LJamesD
  *
  */
 public class KeyPair {
 
 	private final PublicKey pubK;
-	public final PrivateKey privK;
+	private final PrivateKey privK;
+	protected static final int MAX_ENCODE_LEN = 350;
+	protected static final BigInteger CHAR_BASE = BigInteger.valueOf(256);
 	
 	KeyPair() {
 		this.privK = new PrivateKey();
@@ -24,9 +26,9 @@ public class KeyPair {
 	/**
 	 * Encodes a message using the public key of this key pair.
 	 * @param message
-	 * @return THe cipher text of the message.
+	 * @return The cipher text of the message.
 	 */
-	public String encode(String message) {
+	public String[] encode(String message) {
 		return this.pubK.encode(message);
 	}
 	
@@ -35,8 +37,8 @@ public class KeyPair {
 	 * @param cipherText
 	 * @return The decrypted message.
 	 */
-	public String decode(String cipherText) {
-		return this.privK.decode(cipherText);
+	public String decode(String[] cipherTexts) {
+		return this.privK.decode(cipherTexts);
 	}
 	
 	/**
@@ -45,15 +47,15 @@ public class KeyPair {
 	 * @return
 	 */
 	public BigInteger encodeNum(long x) {
-		return this.pubK.encodeNum(x);
+		return this.pubK.encodeNum(BigInteger.valueOf(x));
 	}
 	
 	/**
-	 * Dummy for testing
+	 * Decodes a number which was encrypted using this' public key.
 	 * @param x
-	 * @return
+	 * @return The number which 
 	 */
 	public long decodeNum(BigInteger x) {
-		return this.privK.decodeNum(x);
+		return this.privK.decodeNum(x).longValue();
 	}
 }

@@ -1,6 +1,10 @@
 package RSA;
 
+import java.math.BigInteger;
+
 public class RSA {
+	
+	public static final int MAX_ENCODE_LEN = 400;
 
 	public static void main(String[] args) {
 		int[] arr = binaryOf(8);
@@ -147,5 +151,70 @@ public class RSA {
 		} else {
 			return new long[] {vars[0], vars[4], vars[5]}; // a, x, y
 		}
+	}
+	
+	/**
+	 * Takes in a message and returns an array of Strings where each string represents up to
+	 * {@value #MAX_ENCODE_LEN} characters.
+	 */
+	public static String[] strToNum(String message) {
+		char[] arr = message.toCharArray();
+
+		String[] result = new String[(arr.length / MAX_ENCODE_LEN) + 1];
+		int startIndex = 0;
+		
+		// Separate the string in sections of MAX_ENCODE_LEN characters.
+		for (int i = 0; i < result.length; i++) {
+			int endIndex = Math.min(startIndex + MAX_ENCODE_LEN, arr.length);
+			BigInteger numRep = BigInteger.ZERO;
+			
+			for (int j = startIndex; j < endIndex; j++) {
+				// Get the index within this loop
+				int index = j - startIndex;
+				
+				// Convert character to base 256 and add to previous result
+				numRep = numRep.add(KeyPair.CHAR_BASE.pow(index).multiply
+						(BigInteger.valueOf((int) arr[j])));
+			}
+
+			result[i] = numRep.toString();
+			
+			// Move the starting index MAX_ENCODE_LEN spots forward in the char array.
+			startIndex += MAX_ENCODE_LEN;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Returns the a string created from an array of strings where each array element represents
+	 * the string value of a BigInteger which stores up to {@value #MAX_ENCODE_LEN} characters.
+	 */
+	public static String numToStr(String[] numbers) {
+		String result = "";
+		
+		for (int i = 0; i < numbers.length; i++) {
+			String currStr = "";
+			BigInteger curr = new BigInteger(numbers[i]);
+			
+			// Now that its decrypted return from base 256 to characters.
+			for (int j = MAX_ENCODE_LEN; j >= 0; j--) {
+				// Find the digit and coefficient for the character.
+				BigInteger coeff = KeyPair.CHAR_BASE.pow(j);
+				long digit = curr.divide(coeff).longValue();
+				
+				if (digit != 0) {
+					// Mod decryptedNum by digit*coeff so we can access the next character
+					curr = curr.mod(BigInteger.valueOf(digit).multiply(coeff));
+					
+					// Prepend the character as we are decreasing in indices.
+					currStr = ((char) digit) + currStr;
+				}
+			}
+			
+			result += currStr;
+		}
+		
+		return result;
 	}
 }

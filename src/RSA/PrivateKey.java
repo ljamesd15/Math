@@ -5,17 +5,18 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 /**
- * As of right now only creates the same key pairs every time. DO NOT USE
+ * A private key object for RSA encryption.
  * @author LJamesD
  *
  */
 public class PrivateKey {
 
-	public final BigInteger p;
-	public final BigInteger q;
-	public final BigInteger n;
-	public final BigInteger encodeNum;
-	public final BigInteger decodeNum;
+	private final BigInteger p;
+	private final BigInteger q;
+	private final BigInteger n;
+	private final BigInteger encodeNum;
+	private final BigInteger decodeNum;
+	private static final int MAX_ENCODE_LEN = KeyPair.MAX_ENCODE_LEN;
 	
 	PrivateKey() {
 		Random secRan = new SecureRandom();
@@ -48,8 +49,31 @@ public class PrivateKey {
 	 * @param cipherText
 	 * @return The decrypted message.
 	 */
-	public String decode(String cipherText) {
-		return null;
+	public String decode(String[] cipherTexts) {
+		String result = "";
+		
+		for (int i = 0; i < cipherTexts.length; i++) {
+			BigInteger encryptedNum = new BigInteger(cipherTexts[i]);
+			BigInteger decryptedNum = this.decodeNum(encryptedNum);
+			String currStr = "";
+			
+			// Now that its decrypted return from base 256 to characters.
+			for (int j = MAX_ENCODE_LEN - 1; j >= 0; j--) {
+				// Find the digit and coefficient for the character.
+				BigInteger coeff = KeyPair.CHAR_BASE.pow(j);
+				long digit = decryptedNum.divide(coeff).longValue();
+				
+				if (digit != 0) {
+					// Mod decryptedNum by digit*coeff so we can access the next character
+					decryptedNum = decryptedNum.mod(BigInteger.valueOf(digit).multiply(coeff));
+					
+					// Prepend the character as we are decreasing in indices.
+					currStr = ((char) digit) + currStr;
+				}
+			}
+			result += currStr;
+		}
+		return result;
 	}
 	
 	/**
@@ -57,8 +81,8 @@ public class PrivateKey {
 	 * @param x
 	 * @return
 	 */
-	public long decodeNum(BigInteger x) {
-		return x.modPow(this.decodeNum, this.n).longValue();
+	public BigInteger decodeNum(BigInteger x) {
+		return x.modPow(this.decodeNum, this.n);
 	}
 	
 	/**

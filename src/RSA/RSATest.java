@@ -109,15 +109,56 @@ public class RSATest {
 	@Test
 	public void encodeDecodeKeyPairStrings() {
 		KeyPair pair = new KeyPair();
-		BigInteger cipherText;
-		long decrypted;
-		int[] messages = new int[] {}; // Come up with some test strings
+		
+		String[] messages = {"Hello World!", "This is a test.", "RSA is really cool.",
+				"This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message."};
 		
 		for (int i = 0; i < messages.length; i++) {
-			cipherText = pair.encodeNum(messages[i]);
-			decrypted = pair.decodeNum(cipherText);
-			
-			assertEquals(messages[i], decrypted);
+			String[] ints = pair.encode(messages[i]);
+			String result = pair.decode(ints);
+			assertEquals(messages[i], result);
+		}
+	}
+	
+	@Test
+	public void TestStrToNumAndBack() {
+		String[] messages = {"Hello World!", "This is a test.", "RSA is really cool.",
+				"This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message."};
+
+		for (int i = 0; i < messages.length; i++) {
+			String[] ints = RSA.strToNum(messages[i]);
+			String result = RSA.numToStr(ints);
+			assertEquals(messages[i], result);
 		}
 	}
 }
