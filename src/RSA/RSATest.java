@@ -126,13 +126,21 @@ public class RSATest {
 				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
 				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
 				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
-				+ "This will be a super long message. This will be a super long message. This will be a super long message."};
+				+ "This will be a super long message. This will be a super long message. This will be a super long message.",
+				""};
 		
-		for (int i = 0; i < messages.length; i++) {
+		for (int i = 0; i < messages.length - 1; i++) {
 			String[] ints = pair.encode(messages[i]);
 			String result = pair.decode(ints);
 			assertEquals(messages[i], result);
 		}
+		
+		for (int i = 0; i < 410; i++) {
+			messages[messages.length - 1] = messages[messages.length - 1] + (char) 255;
+		}
+		
+		assertEquals(messages[messages.length - 1], 
+				pair.decode(pair.encode(messages[messages.length - 1])));
 	}
 	
 	@Test

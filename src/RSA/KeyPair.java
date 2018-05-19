@@ -12,7 +12,7 @@ public class KeyPair {
 	private final PublicKey pubK;
 	private final PrivateKey privK;
 	/** At around 380-390 we lose precision in BigIntegers. If edited make sure it still works. **/
-	protected static final int MAX_ENCODE_LEN = 350; 
+	protected static final int MAX_ENCODE_LEN = 375; 
 	protected static final BigInteger CHAR_BASE = BigInteger.valueOf(256);
 	
 	KeyPair() {
