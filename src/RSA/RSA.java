@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 public class RSA {
 	
-	public static final int MAX_ENCODE_LEN = 400;
+	public static final int MAX_ENCODE_LEN = KeyPair.MAX_ENCODE_LEN;
 
 	public static void main(String[] args) {
 		KeyPair pair = new KeyPair();
