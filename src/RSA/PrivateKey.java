@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 /**
- * A private key object for RSA encryption.
+ * A private key object for RSA encryption. Used to decrypt messages from the paired public key.
  * @author LJamesD
  *
  */
@@ -16,12 +16,22 @@ public class PrivateKey {
 	private final BigInteger n;
 	private final BigInteger encodeNum;
 	private final BigInteger decodeNum;
-	private static final int MAX_ENCODE_LEN = KeyPair.MAX_ENCODE_LEN;
+	private int maxEncodeLen;
 	
-	PrivateKey() {
+	/**
+	 * Creates a secret key which can be used to decrypt messages encrypted with the corresponding
+	 * public key.
+	 * @param keySize The bit-size of this key.
+	 * @param maxEncodeLen The maximum number of characters which can be encrypted and decrypted at
+	 * one time.
+	 */
+	protected PrivateKey(int keySize, int maxEncodeLen) {
 		Random secRan = new SecureRandom();
-		this.p = new BigInteger(2048, 4, secRan);
-		this.q = new BigInteger(1024, 4, secRan);
+		this.maxEncodeLen = maxEncodeLen;
+		this.p = new BigInteger(keySize + 1, 4, secRan);
+		this.q = new BigInteger(keySize - 1, 4, secRan);
+		// We want to have different bit sized primes so we can assure that they are far enough
+		// away from one another so that factoring stays difficult.
 		this.n = this.p.multiply(this.q);
 		
 		BigInteger euler_phi = (this.p.subtract(BigInteger.ONE).multiply(this.q.subtract(BigInteger.ONE)));
@@ -45,9 +55,23 @@ public class PrivateKey {
 	}
 	
 	/**
-	 * Decodes cipherText which was encoded with the corresponding public key.
-	 * @param cipherText
-	 * @return The decrypted message.
+	 * Sets the new encoding length to 'length'. Only to be used for testing purposes. There are
+	 * no guarantees about the functionality of this PrivateKey after this method is called.
+	 * @param length The new encoding length for this PrivateKey.
+	 * @throws IllegalArgumentException if length is less than 1.
+	 */
+	protected void setEncodeLength(int length) {
+		if (length < 1) {
+			throw new IllegalArgumentException("length must be greater than 0.");
+		}
+		this.maxEncodeLen = length;
+	}
+	
+	/**
+	 * Decrypts the provided encrypted strings and concatenates the decrypted versions into one
+	 * string. Must be encrypted by the paired public key for decryption to work.
+	 * @param cipherText The strings which will be decrypted.
+	 * @return The decrypted message concatenated into one string.
 	 */
 	public String decode(String[] cipherTexts) {
 		String result = "";
@@ -58,7 +82,7 @@ public class PrivateKey {
 			String currStr = "";
 			
 			// Now that its decrypted return from base 256 to characters.
-			for (int j = MAX_ENCODE_LEN - 1; j >= 0; j--) {
+			for (int j = maxEncodeLen - 1; j >= 0; j--) {
 				// Find the digit and coefficient for the character.
 				BigInteger coeff = KeyPair.CHAR_BASE.pow(j);
 				long digit = decryptedNum.divide(coeff).longValue();
@@ -77,9 +101,9 @@ public class PrivateKey {
 	}
 	
 	/**
-	 * Dummy for testing
-	 * @param x
-	 * @return
+	 * Decrypts a number which was encrypted using the paired public key.
+	 * @param x The number which will be decrypted.
+	 * @return The decrypted version of the parameter.
 	 */
 	public BigInteger decodeNum(BigInteger x) {
 		return x.modPow(this.decodeNum, this.n);
@@ -88,8 +112,8 @@ public class PrivateKey {
 	/**
 	 * Generates and returns a public key based off of this private key's information.
 	 */
-	public PublicKey genPubKey() {
-		return new PublicKey(this.n, this.encodeNum);
+	protected PublicKey genPubKey() {
+		return new PublicKey(this.n, this.encodeNum, this.maxEncodeLen);
 	}
 	
 	/**
@@ -98,7 +122,7 @@ public class PrivateKey {
 	 * @param b
 	 * @return The array containing arr[0] = gcd(a, b), arr[1] = x, and arr[2] = y
 	 */
-	public static BigInteger[] extEucAlgo(BigInteger a, BigInteger b) {
+	private static BigInteger[] extEucAlgo(BigInteger a, BigInteger b) {
 		boolean swappedVals = false;
 		if (b.compareTo(a) == 1) {
 			BigInteger tmp = a;

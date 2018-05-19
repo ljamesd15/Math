@@ -4,25 +4,10 @@ import java.math.BigInteger;
 
 public class RSA {
 	
-	public static final int MAX_ENCODE_LEN = KeyPair.MAX_ENCODE_LEN;
+	public static final int MAX_ENCODE_LEN = 400;
 
 	public static void main(String[] args) {
-		KeyPair pair = new KeyPair();
 		
-		String message = "This is my TOP SECRET message. After I encrypt it no one will be able "
-				+ "to see it.";
-		
-		System.out.println(message);
-		String[] encryptedMessages = pair.encode(message);
-		for (int i = 0; i < encryptedMessages.length; i++) {
-			System.out.println(encryptedMessages[i]);
-		}
-		System.out.println("See these numbers are unreadable!");
-
-		System.out.println("I forgot what my secret message was again.");
-		String myMessage = pair.decode(encryptedMessages);
-		System.out.println("\"" + myMessage + "\"");
-		System.out.println("Oh yeah that's what it was.");
 	}
 	
 	/**
