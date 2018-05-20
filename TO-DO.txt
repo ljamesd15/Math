@@ -1,0 +1,11 @@
+TO DO LIST: 
+
+-- RSA
+	Make serializable
+	Allow users to authenticate themselves with private key signing.
+
+-- Testing
+
+-- Other
+	Diffie-helman
+	Maybe elliptic curve
