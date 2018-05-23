@@ -80,12 +80,15 @@ public class PrivateKey {
 		for (int i = 0; i < cipherTexts.length; i++) {
 			BigInteger encryptedNum = new BigInteger(cipherTexts[i]);
 			BigInteger decryptedNum = this.decodeNum(encryptedNum);
+			String currStr = "";
 			
 			// Get the next character until the decrypted number is zero.
 			while(decryptedNum.compareTo(BigInteger.ZERO) != 0) {
-				result += (char)(decryptedNum.mod(KeyPair.CHAR_BASE).intValue());
+				// Pre-pend the character
+				currStr = (char)(decryptedNum.mod(KeyPair.CHAR_BASE).intValue()) + currStr;
 				decryptedNum = decryptedNum.divide(KeyPair.CHAR_BASE);
 			}
+			result = currStr + result;
 		}
 		return result;
 	}

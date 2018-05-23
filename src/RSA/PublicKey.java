@@ -34,23 +34,25 @@ public class PublicKey {
 	 * @return The cipher text of message after encoding by this.
 	 */
 	public String[] encode(String message) {
-		char[] arr = message.toCharArray();
+		char[] messageArr = message.toCharArray();
 
-		String[] result = new String[(arr.length / maxEncodeLen) + 1];
-		int startIndex = 0;
+		String[] result = new String[(messageArr.length / maxEncodeLen) + 1];
+		int startIndex = messageArr.length;
 		
 		// Separate the string in sections of MAX_ENCODE_LEN characters.
 		for (int i = 0; i < result.length; i++) {
-			int endIndex = Math.min(startIndex + maxEncodeLen, arr.length);
+			
+			// We wan to traverse backwards through the letters.
+			int endIndex = Math.max(startIndex - maxEncodeLen, 0);
 			BigInteger numRep = BigInteger.ZERO;
 			
-			for (int j = startIndex; j < endIndex; j++) {
-				// Get the index within this loop
-				int index = j - startIndex;
+			for (int j = startIndex - 1; j >= endIndex; j--) {
+				// Get the index within this encoding chunk.
+				int index = startIndex - 1 - j;
 				
 				// Convert character to base 256 and add to previous result
 				numRep = numRep.add(KeyPair.CHAR_BASE.pow(index).multiply
-						(BigInteger.valueOf((int) arr[j])));
+						(BigInteger.valueOf((int) messageArr[j])));
 			}
 
 			// Encrypt the integer representation
@@ -58,7 +60,7 @@ public class PublicKey {
 			result[i] = encryptedVal.toString();
 
 			// Move the starting index MAX_ENCODE_LEN spots forward in the char array.
-			startIndex += maxEncodeLen;
+			startIndex -= maxEncodeLen;
 		}
 		
 		return result;

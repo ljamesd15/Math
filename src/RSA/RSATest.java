@@ -192,7 +192,7 @@ public class RSATest {
 	}
 	
 	@Test
-	public void testTimeOfEncodeDecode() {
+	public void testTimeOfDecode() {
 		KeyPair pair = new KeyPair(2048);
 		long start, end, elapsedTimes100Norm;
 		int timesToDecode = 20;
