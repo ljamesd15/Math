@@ -93,22 +93,19 @@ public class RSATest {
 	
 	@Test
 	public void encodeDecodeKeyPairInts() {
-		KeyPair pair = new KeyPair(1024, 300);
+		KeyPair pair = new KeyPair(1024);
 		BigInteger cipherText;
-		long decrypted;
 		int[] messages = new int[] {17, 0, 1, 27, 300, 4782172, 4782169, 560212};
 		
 		for (int i = 0; i < messages.length; i++) {
 			cipherText = pair.encodeNum(messages[i]);
-			decrypted = pair.decodeNum(cipherText);
-			
-			assertEquals(messages[i], decrypted);
+			assertEquals(messages[i], pair.decodeNum(cipherText));
 		}
 	}
 	
 	@Test
 	public void encodeDecodeKeyPairStrings() {
-		KeyPair pair = new KeyPair(2048, 350);
+		KeyPair pair = new KeyPair(2048);
 		
 		String[] messages = {"Hello World!", "This is a test.", "RSA is really cool.",
 				"This will be a super long message. This will be a super long message. This will be a super long message. "
@@ -131,8 +128,7 @@ public class RSATest {
 		
 		for (int i = 0; i < messages.length - 1; i++) {
 			String[] ints = pair.encode(messages[i]);
-			String result = pair.decode(ints);
-			assertEquals(messages[i], result);
+			assertEquals(messages[i], pair.decode(ints));
 		}
 		
 		for (int i = 0; i < 410; i++) {
@@ -144,7 +140,7 @@ public class RSATest {
 	}
 	
 	@Test
-	public void TestStrToNumAndBack() {
+	public void testStrToNumAndBack() {
 		String[] messages = {"Hello World!", "This is a test.", "RSA is really cool.",
 				"This will be a super long message. This will be a super long message. This will be a super long message. "
 				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
@@ -165,8 +161,7 @@ public class RSATest {
 
 		for (int i = 0; i < messages.length; i++) {
 			String[] ints = RSA.strToNum(messages[i]);
-			String result = RSA.numToStr(ints);
-			assertEquals(messages[i], result);
+			assertEquals(messages[i], RSA.numToStr(ints));
 		}
 	}
 	
@@ -193,44 +188,55 @@ public class RSATest {
 				
 				assert(message.equals(pair.decode(pair.encode(message))));
 			}
-		}		
+		}
+	}
+	
+	@Test
+	public void testTimeOfEncodeDecode() {
+		KeyPair pair = new KeyPair(2048);
+		long start, end, elapsedTimes100Norm;
+		int timesToDecode = 20;
 		
-		/* CODE FOR FINDING MAX ENCODING LENGTHS.
-		int[] encodeLens = new int[9];
-		for (int i = 0; i < encodeLens.length; i++) {
-			// 200, 225, 250, ... 975, 1000
-			encodeLens[i] = 200 + 25 * i;
+		// Create the messages
+		String[] messages = {"Hello World!", "This is a test.", "RSA is really cool.",
+				"This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message. "
+				+ "This will be a super long message. This will be a super long message. This will be a super long message.",
+				""};
+		for (int i = 0; i < 410; i++) {
+			messages[messages.length - 1] = messages[messages.length - 1] + (char) 255;
 		}
 		
-		// Test each size and encoding length to find the largest encoding length for each 
-		// key size.
-		for (int i = 0; i < keySizes.length; i++) {
-			int keySize = keySizes[i];
-			int minEncodeLen = encodeLens[encodeLens.length - 1];
-			
-			// Run this multiple times to get different p's and q's so we can be fairly sure of
-			// Size requirements.
-			for (int j = 0; j < 20; j++) {
-				KeyPair pair = new KeyPair(keySize, encodeLens[0]);
-				int maxEncodeLen = 0;
-				
-				for (int k = 0; k < encodeLens.length; k++) {
-					int encodeLen = encodeLens[k];
-					pair.setEncodeLength(encodeLen);
-					
-					// Check if when we encrypt then decrypt we can get the same message back.
-					if (message.equals(pair.decode(pair.encode(message)))) {
-						maxEncodeLen = encodeLen;
-					} else {
-						break;
-					}
-				}
-				
-				minEncodeLen = Math.min(minEncodeLen, maxEncodeLen);
+		// Encode each of the messages.
+		String[][] encodings = new String[messages.length][];
+		for (int i = 0; i < messages.length - 1; i++) {
+			encodings[i] = pair.encode(messages[i]);
+		}
+		
+		// Decode the messages method
+		start = System.nanoTime();
+		for (int i = 0; i < timesToDecode; i++) {
+			for (int j = 0; j < messages.length - 1; j++) {
+				assertEquals(messages[j], pair.decode(encodings[j]));
 			}
-			// Output findings.
-			System.out.println("Max encoding length for a key pair size of " + keySize 
-					+ " should be " + minEncodeLen);
-		}*/
+		}
+		end = System.nanoTime();
+		elapsedTimes100Norm = (end - start) / 10000000;
+		
+		// Output results
+		System.out.println("It took " + elapsedTimes100Norm / 100.0 + " seconds with decode.");
 	}
 }

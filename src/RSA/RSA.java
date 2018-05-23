@@ -213,4 +213,57 @@ public class RSA {
 		
 		return result;
 	}
+	
+	public static void findMaxEncodeLens() {
+		/* CODE FOR FINDING MAX ENCODING LENGTHS. */
+		
+		// Supported key sizes.
+		int[] keySizes = new int[] {1024, 2048, 4096};
+		
+		// List of possible encoding lengths
+		int[] encodeLens = new int[9];
+		for (int i = 0; i < encodeLens.length; i++) {
+			// 200, 225, 250, ... 975, 1000
+			encodeLens[i] = 200 + 25 * i;
+		}
+		
+		// Create a message of the highest integer value characters. Make the message length 
+		// just larger than the maximum possible encoding length so that it will spill to another
+		// encoding block.
+		String message = "";
+		for (int j = 0; j < encodeLens[encodeLens.length - 1] + 10; j++) {
+			message = message + (char) 255;
+		}
+		
+		// Test each size and encoding length to find the largest encoding length for each 
+		// key size.
+		for (int i = 0; i < keySizes.length; i++) {
+			int keySize = keySizes[i];
+			int minEncodeLen = encodeLens[encodeLens.length - 1];
+			
+			// Run this multiple times to get different p's and q's so we can be fairly sure of
+			// Size requirements.
+			for (int j = 0; j < 20; j++) {
+				KeyPair pair = new KeyPair(keySize, encodeLens[0]);
+				int maxEncodeLen = 0;
+				
+				for (int k = 0; k < encodeLens.length; k++) {
+					int encodeLen = encodeLens[k];
+					pair.setEncodeLength(encodeLen);
+					
+					// Check if when we encrypt then decrypt we can get the same message back.
+					if (message.equals(pair.decode(pair.encode(message)))) {
+						maxEncodeLen = encodeLen;
+					} else {
+						break;
+					}
+				}
+				
+				minEncodeLen = Math.min(minEncodeLen, maxEncodeLen);
+			}
+			// Output findings.
+			System.out.println("Max encoding length for a key pair size of " + keySize 
+					+ " should be " + minEncodeLen);
+		}
+	}
 }

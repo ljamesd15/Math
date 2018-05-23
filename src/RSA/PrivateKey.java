@@ -76,26 +76,16 @@ public class PrivateKey {
 	public String decode(String[] cipherTexts) {
 		String result = "";
 		
+		// Decrypt each cipher text then convert the number into a string.
 		for (int i = 0; i < cipherTexts.length; i++) {
 			BigInteger encryptedNum = new BigInteger(cipherTexts[i]);
 			BigInteger decryptedNum = this.decodeNum(encryptedNum);
-			String currStr = "";
 			
-			// Now that its decrypted return from base 256 to characters.
-			for (int j = maxEncodeLen - 1; j >= 0; j--) {
-				// Find the digit and coefficient for the character.
-				BigInteger coeff = KeyPair.CHAR_BASE.pow(j);
-				long digit = decryptedNum.divide(coeff).longValue();
-				
-				if (digit != 0) {
-					// Mod decryptedNum by digit*coeff so we can access the next character
-					decryptedNum = decryptedNum.mod(BigInteger.valueOf(digit).multiply(coeff));
-					
-					// Prepend the character as we are decreasing in indices.
-					currStr = ((char) digit) + currStr;
-				}
+			// Get the next character until the decrypted number is zero.
+			while(decryptedNum.compareTo(BigInteger.ZERO) != 0) {
+				result += (char)(decryptedNum.mod(KeyPair.CHAR_BASE).intValue());
+				decryptedNum = decryptedNum.divide(KeyPair.CHAR_BASE);
 			}
-			result += currStr;
 		}
 		return result;
 	}
