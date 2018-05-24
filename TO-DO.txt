@@ -3,6 +3,9 @@ TO DO LIST:
 -- RSA
 	Make serializable
 	Allow users to authenticate themselves with private key signing.
+	add a salt to the start of each block to prevent plain text attacks
+	log base 255 of smallest x bit number to get our max encoding lengths
+	find a way to make 'e' fairly small and odd
 
 -- Testing
 
